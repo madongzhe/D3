@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>D3案例(v4)</title>
+    <link href="css/index.min.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+    <div class="hend"><strong style="line-height: 60px;margin-left:10px; font-size: 26px;">D3案例(v4)</strong></div>
+    <div class="main">
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <ul class="list-unstyled">
+                    <li>
+                        <p><a href="#">线性图</a></p>
+                        <ul class="list-unstyled">
+                            <li><a href="line/line.html" target="right">简单线图</a></li>
+                            <li><a href="#" target="right">基础线图</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><a href="#">饼图</a></p>
+                        <ul class="list-unstyled hidden">
+                            <li><a href="#" target="right">简单饼图</a></li>
+                            <li><a href="#" target="right">基础饼图</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><a href="#">地图</a></p>
+                        <ul class="list-unstyled hidden">
+                            <li><a href="map/china-province.html" target="right">中国省划分地图</a></li>
+                            <li><a href="map/china-scenic.html" target="right">各地景点1</a></li>
+                            <li><a href="map/china-scenic.1.html" target="right">各地景点2</a></li>
+                            <li><a href="map/china-city.html" target="right">全国城市</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-container">
+            <iframe name="right"></iframe>
+        </div>
+    </div>
+<script>
+    $(window).ready(function(){
+        // 菜单收缩
+        $('.sidebar-menu ul p').click(function(){
+            $(this).next().slideToggle();
+            $(this).toggleClass('jian');
+        })
+        $('.sidebar-menu ul li ul li').click(function(){
+            $('.sidebar-menu ul  li ul li').removeClass('active');
+            $(this).addClass('active');
+        })
+    });    
+</script>
+</body>
+</html>

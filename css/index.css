@@ -1,0 +1,324 @@
+html, body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  background-color: #333;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #00f;
+}
+
+.list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+.hend {
+  height: 60px;
+  background: #ccc;
+}
+
+.main {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 63px);
+}
+
+.main .sidebar {
+  position: absolute;
+  width: 160px;
+  height: 100%;
+  background: #161616;
+  color: #ccc;
+}
+
+.main .sidebar .sidebar-menu {
+  overflow: auto;
+}
+
+.main .sidebar .sidebar-menu ul > li p {
+  line-height: 2.5;
+  padding-left: 10px;
+  font-size: 16px;
+  color: #ddd;
+  margin: 0;
+  cursor: pointer;
+  background-color: #999;
+  border-bottom: 1px #666 solid;
+}
+
+.main .sidebar .sidebar-menu ul > li ul > li {
+  font-size: 14px;
+  line-height: 2;
+  position: relative;
+}
+
+.main .sidebar .sidebar-menu ul > li ul > li.active {
+  background-color: #333;
+}
+
+.main .sidebar .sidebar-menu ul > li ul > li.active:after {
+  transform: scaleY(1);
+  opacity: 1;
+}
+
+.main .sidebar .sidebar-menu ul > li ul > li a {
+  color: #999;
+  display: block;
+  padding: 10px 0 10px 35px;
+  transition: background-color 1s;
+  -o-transition: background-color 1s;
+  -moz-transition: background-color 1s;
+  -webkit-transition: background-color 1s;
+  -ms-transition: background-color 1s;
+}
+
+.main .sidebar .sidebar-menu ul > li ul > li:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-left: 3px #00f solid;
+  transform: scaleY(0.001);
+  opacity: 0;
+  transition: transform 0.15s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.main .sidebar .sidebar-menu ul > li a {
+  color: #fff;
+}
+
+.main .main-container {
+  margin-left: 170px;
+  height: 100%;
+}
+
+.main .main-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0 10px;
+}
+
+.margin-lg {
+  margin: 40px;
+}
+
+.margin-md {
+  margin: 30px;
+}
+
+.margin {
+  margin: 20px;
+}
+
+.margin-sm {
+  margin: 10px;
+}
+
+.margin-xs {
+  margin: 5px;
+}
+
+.margin-t-lg {
+  margin-top: 40px;
+}
+
+.margin-t-md {
+  margin-top: 30px;
+}
+
+.margin-t {
+  margin-top: 20px;
+}
+
+.margin-t-sm {
+  margin-top: 10px;
+}
+
+.margin-t-xs {
+  margin-top: 5px;
+}
+
+.margin-b-lg {
+  margin-bottom: 40px;
+}
+
+.margin-b-md {
+  margin-bottom: 30px;
+}
+
+.margin-b {
+  margin-bottom: 20px;
+}
+
+.margin-b-sm {
+  margin-bottom: 10px;
+}
+
+.margin-b-xs {
+  margin-bottom: 5px;
+}
+
+.margin-l-lg {
+  margin-left: 40px;
+}
+
+.margin-l-md {
+  margin-left: 30px;
+}
+
+.margin-l {
+  margin-left: 20px;
+}
+
+.margin-l-sm {
+  margin-left: 10px;
+}
+
+.margin-l-xs {
+  margin-left: 5px;
+}
+
+.margin-r-lg {
+  margin-right: 40px;
+}
+
+.margin-r-md {
+  margin-right: 30px;
+}
+
+.margin-r {
+  margin-right: 20px;
+}
+
+.margin-r-sm {
+  margin-right: 10px;
+}
+
+.margin-r-xs {
+  margin-right: 5px;
+}
+
+.padding-lg {
+  padding: 40px;
+}
+
+.padding-md {
+  padding: 30px;
+}
+
+.padding {
+  padding: 20px;
+}
+
+.padding-sm {
+  padding: 10px;
+}
+
+.padding-xs {
+  padding: 5px;
+}
+
+.padding-t-lg {
+  padding-top: 40px;
+}
+
+.padding-t-md {
+  padding-top: 30px;
+}
+
+.padding-t {
+  padding-top: 20px;
+}
+
+.padding-t-sm {
+  padding-top: 10px;
+}
+
+.padding-t-xs {
+  padding-top: 5px;
+}
+
+.padding-r-lg {
+  padding-right: 40px;
+}
+
+.padding-r-md {
+  padding-right: 30px;
+}
+
+.padding-r {
+  padding-right: 20px;
+}
+
+.padding-r-sm {
+  padding-right: 10px;
+}
+
+.padding-r-xs {
+  padding-right: 5px;
+}
+
+.padding-b-lg {
+  padding-bottom: 40px;
+}
+
+.padding-b-md {
+  padding-bottom: 30px;
+}
+
+.padding-b {
+  padding-bottom: 20px;
+}
+
+.padding-b-sm {
+  padding-bottom: 10px;
+}
+
+.padding-b-xs {
+  padding-bottom: 5px;
+}
+
+.padding-l-lg {
+  padding-left: 40px;
+}
+
+.padding-l-md {
+  padding-left: 30px;
+}
+
+.padding-l {
+  padding-left: 20px;
+}
+
+.padding-l-sm {
+  padding-left: 10px;
+}
+
+.padding-l-xs {
+  padding-left: 5px;
+}

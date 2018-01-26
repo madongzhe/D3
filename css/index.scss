@@ -1,0 +1,92 @@
+
+@import "mixins/_basics.scss";
+.hend{
+    height: 60px;
+    background:#ccc;
+}
+
+.main{
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 63px);
+    .sidebar{
+        position: absolute;
+        width: 160px;
+        height: 100%;
+        background: rgb(22, 22, 22);
+        color: #ccc;
+        .sidebar-menu{
+            overflow: auto;
+            ul>li{
+                p{
+                    line-height: 2.5;
+                    padding-left: 10px;
+                    font-size: 16px;
+                    color: #ddd;
+                    margin: 0;
+                    cursor: pointer;
+                    background-color: #999;
+                    border-bottom: 1px #666 solid;
+                }
+                ul>li{
+                    font-size: 14px;
+                    line-height: 2;
+                    position: relative;
+                    &.active{
+                        background-color: #333;
+                        &:after {
+                            transform: scaleY(1);
+                            opacity: 1;
+                        }
+                    }
+                    a{
+                        color: #999;
+                        display: block;
+                        padding: 10px 0 10px 35px;
+                        transition: background-color 1s;
+                        -o-transition: background-color 1s;
+                        -moz-transition: background-color 1s;
+                        -webkit-transition: background-color 1s;
+                        -ms-transition: background-color 1s;
+    
+                        &:hover{
+                            
+                        }
+                    }
+                    
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        bottom: 0;
+                        border-left: 3px #00f solid;
+                        transform: scaleY(0.001);
+                        opacity: 0;
+                        transition: transform 0.15s cubic-bezier(0.215, 0.61, 0.355, 1),opacity 0.15s cubic-bezier(0.215, 0.61, 0.355, 1);
+                    }
+                }
+                a{
+                    color: #fff;
+                    &:hover{
+                        
+                    }
+                }
+        
+            } 
+        }
+    }
+    .main-container{
+        margin-left: 170px;
+        height: 100%;
+
+        iframe{
+            width: 100%;
+            height: 100%;
+            border: 0;
+            padding: 0 10px;
+        }
+    }
+}
+@import "mixins/_margin.scss";
+@import "mixins/_padding.scss";
