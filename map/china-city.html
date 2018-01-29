@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>中国地图</title>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="../js/d3.v4.min.js"></script>
+    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
     <style type="text/css">  
         body{
                 background-color: #333;
@@ -29,135 +30,111 @@
 </head>
 <body>
     <div id="app"></div>
-<script>
-	var width  = 800;
-	var height = 550;
-	
-    var margin = {
-      left: 50,
-      top: 50,
-      right: 50,
-      botton: 30
-    }
-    var g_width = width - margin.left - margin.right;
-    var g_height = height - margin.top - margin.botton;
+    <script>
+        var width  = 800;
+        var height = 550;
+        
+        var margin = {
+        left: 50,
+        top: 50,
+        right: 50,
+        botton: 30
+        }
+        var g_width = width - margin.left - margin.right;
+        var g_height = height - margin.top - margin.botton;
 
-    var svg = d3.select("#app")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg = d3.select("#app")
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
 
-	var color = d3.scaleOrdinal(d3.schemeCategory20);
-	
-    // 加载中国地图
-	d3.json("../json/china.JSON", function(error, root) {
-		
-		if (error){
-            return console.error(error);
-        } 
-			
-		//console.log(root.features);
-        var projection = d3.geoMercator()
-						// .center([107, 31])
-						//.scale(600)
-    					//.translate([width/2, height/2]);
-                        .fitExtent([[10,10],[g_width, g_height]],root);
-	
-        var path = d3.geoPath()
-                        .projection(projection);
-		svg.selectAll("path")
-			.data( root.features )
-			.enter()
-			.append("path")
-			.attr("stroke","#666")
-			.attr("stroke-width",1)
-			.attr("fill", function(d,i){
-				return "#ccc";
-			})
-			.attr("d", path )
-			.on("mouseover",function(d,i){
-                d3.select(this)
-                    .attr("fill","yellow");
-                //添加提示框的div  
-                var tooltip = d3.select("body").append("div")  
-                                .attr("class","tooltip") //用于css设置类样式  
-                                .attr("opacity",0.0);
-                //设置tooltip文字  
-                tooltip.html(root.features[i]["properties"]["name"])  
-                //设置tooltip的位置(left,top 相对于页面的距离)   
-                        .style("left",(d3.event.pageX)+"px")  
-                        .style("top",(d3.event.pageY+20)+"px")  
-                        .style("opacity",1.0);  
-            })
-            .on("mouseout",function(d,i){
-                d3.select(this)
-                    .attr("fill","#ccc");
-                d3.select(".tooltip").remove(); 
-            });
+        svg.append("text")
+            .attr("x",0)
+            .attr("y",30)
+            .style("font-size",30)
+            .attr("fill","#fff")
+            .text("城市地图");
+
+        var g = svg.append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+        
+        // 加载中国地图
+        d3.json("../json/china.JSON", function(error, root) {
             
-            //插入全国城市
-            d3.json("../json/geoinfo-all.json", function(error, places ) {
-                console.log(places);
-                //插入分组元素
-                var location = svg.selectAll(".location")
-                                .data(places)
-                                .enter()
-                                .append("g")
-                                .attr("class","location")
-                                .attr("transform",function(d){
-                                    //计算标注点的位置
-                                    console.log(d.center.split(','))
-                                    var coor = projection(d.center.split(','));
-                                    return "translate("+ coor[0] + "," + coor[1] +")";
-                                });
-                //插入一条线
-                // location.append('path')
-                //         .attr('stroke', '#333')
-                //         .attr('stroke-width', '2')
-                //         .attr('fill', 'none')
-                //         //    设置路径信息
-                //         .attr('d', 'M0,0 20,-40');
-                //插入一个圆
-                location.append("circle")
-                        .attr('stroke', '#f00')
-                        .attr("fill", "#f00")
-                        .attr("r",3)
-                        .on("mouseover",function(d,i){
-                            d3.select(this)
-                                .attr("fill","yellow");
-                            //添加提示框的div  
-                            var tooltip = d3.select("body").append("div")  
-                                            .attr("class","tooltip") //用于css设置类样式  
-                                            .attr("opacity",0.0);
-                            //设置tooltip文字  
-                            tooltip.html(places[i]["name"])  
-                            //设置tooltip的位置(left,top 相对于页面的距离)   
-                                    .style("left",(d3.event.pageX)+"px")  
-                                    .style("top",(d3.event.pageY+20)+"px")  
-                                    .style("opacity",1.0);  
-                        })
-                        .on("mouseout",function(d,i){
-                            d3.select(this)
-                                .attr("fill","#ccc");
-                            d3.select(".tooltip").remove(); 
-                        });
-                        ;
+            if (error){
+                return console.error(error);
+            } 
                 
-                //插入一张图片
-                // location.append("image")
-                //         .attr("x",20)
-                //         .attr("y",-40)
-                //         .attr("width",90)
-                //         .attr("height",90)
-                //         .attr("xlink:href",function(d){
-                //             return d.img;
-                //         });
+            //console.log(root.features);
+            var projection = d3.geoMercator()
+                            .fitExtent([[10,10],[g_width, g_height]],root);
+        
+            var path = d3.geoPath()
+                            .projection(projection);
+            g.selectAll("path")
+                .data( root.features )
+                .enter()
+                .append("path")
+                .attr("stroke","#666")
+                .attr("stroke-width",1)
+                .attr("fill", function(d,i){
+                    return "#ccc";
+                })
+                .attr("d", path )
+                .on("mouseover",function(d,i){
+                    d3.select(this)
+                        .attr("fill","#999"); 
+                })
+                .on("mouseout",function(d,i){
+                    d3.select(this)
+                        .attr("fill","#ccc");
+                });
+                
+                //插入全国城市
+                d3.json("../json/city.json", function(error, places ) {
+                    console.log(places);
+                    //插入分组元素
+                    var location = g.selectAll(".location")
+                                    .data(places)
+                                    .enter()
+                                    .append("g")
+                                    .attr("class","location")
+                                    .attr("transform",function(d){
+                                        //计算标注点的位置
+                                        var coor = projection(d.cd);
+                                        return "translate("+ coor[0] + "," + coor[1] +")";
+                                    });
+                    
+                    //插入一个圆
+                    location.append("circle")
+                            .attr("fill", "#f00")
+                            .attr("r",3)
+                            .on("mouseover",function(d,i){
+                                d3.select(this)
+                                    .attr("fill","blue");
+                                //添加提示框的div  
+                                var tooltip = d3.select("body").append("div")  
+                                                .attr("class","tooltip") //用于css设置类样式  
+                                                .attr("opacity",0.0);
+                                //设置tooltip文字  
+                                tooltip.html(places[i]["name"])  
+                                //设置tooltip的位置(left,top 相对于页面的距离)   
+                                        .style("left",(d3.event.pageX)+"px")  
+                                        .style("top",(d3.event.pageY+20)+"px")  
+                                        .style("opacity",1.0);  
+                            })
+                            .on("mouseout",function(d,i){
+                                d3.select(this)
+                                    .attr("fill","#f00");
+                                d3.select(".tooltip").remove(); 
+                            });
 
-            });
-	});
+                });
+        });
 
-</script>
+    </script>
 </body>
 </html>

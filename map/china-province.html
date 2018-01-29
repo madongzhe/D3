@@ -29,84 +29,84 @@
 </head>
 <body>
     <div id="app"></div>
-<script>
-	var width  = 800;
-	var height = 550;
-	
-	// var svg = d3.select("#app").append("svg")
-	//     .attr("width", width)
-	//     .attr("height", height)
-	//     .append("g")
-    //     .attr("transform", "translate(0,0)");
-    var margin = {
-      left: 50,
-      top: 100,
-      right: 50,
-      botton: 30
-    }
-    var g_width = width - margin.left - margin.right;
-    var g_height = height - margin.top - margin.botton;
+    <script>
+        var width  = 800;
+        var height = 550;
+        
+        // var svg = d3.select("#app").append("svg")
+        //     .attr("width", width)
+        //     .attr("height", height)
+        //     .append("g")
+        //     .attr("transform", "translate(0,0)");
+        var margin = {
+        left: 50,
+        top: 100,
+        right: 50,
+        botton: 30
+        }
+        var g_width = width - margin.left - margin.right;
+        var g_height = height - margin.top - margin.botton;
 
-    var svg = d3.select("#app")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var svg = d3.select("#app")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	
-	var projection = d3.geoMercator()
-						.center([107, 31])
-						.scale(600)
-    					.translate([width/2, height/2]);
-	
-	var path = d3.geoPath()
-					.projection(projection);
-	
-	
-	var color = d3.scaleOrdinal(d3.schemeCategory20);;
-	
-	
-	d3.json("../json/china-province.json", function(error, root) {
-		
-		if (error){
-            return console.error(error);
-        } 
-			
-		// console.log(root.features);
-		 
-		svg.selectAll("path")
-			.data( root.features )
-			.enter()
-			.append("path")
-			.attr("stroke","#000")
-			.attr("stroke-width",1)
-			.attr("fill", function(d,i){
-				return color(i);
-			})
-			.attr("d", path )
-			.on("mouseover",function(d,i){
-                d3.select(this)
-                    .attr("fill","yellow");
-                //添加提示框的div  
-                var tooltip = d3.select("body").append("div")  
-                                .attr("class","tooltip") //用于css设置类样式  
-                                .attr("opacity",0.0);
-                //设置tooltip文字  
-                tooltip.html(root.features[i]["properties"]["name"])  
-                //设置tooltip的位置(left,top 相对于页面的距离)   
-                        .style("left",(d3.event.pageX)+"px")  
-                        .style("top",(d3.event.pageY+20)+"px")  
-                        .style("opacity",1.0);  
-            })
-            .on("mouseout",function(d,i){
-                d3.select(this)
-                    .attr("fill",color(i));
-                d3.select(".tooltip").remove(); 
-            });
-		
-	});
+        
+        var projection = d3.geoMercator()
+                            .center([107, 31])
+                            .scale(600)
+                            .translate([width/2, height/2]);
+        
+        var path = d3.geoPath()
+                        .projection(projection);
+        
+        
+        var color = d3.scaleOrdinal(d3.schemeCategory20);;
+        
+        
+        d3.json("../json/china-province.json", function(error, root) {
+            
+            if (error){
+                return console.error(error);
+            } 
+                
+            // console.log(root.features);
+            
+            svg.selectAll("path")
+                .data( root.features )
+                .enter()
+                .append("path")
+                .attr("stroke","#000")
+                .attr("stroke-width",1)
+                .attr("fill", function(d,i){
+                    return color(i);
+                })
+                .attr("d", path )
+                .on("mouseover",function(d,i){
+                    d3.select(this)
+                        .attr("fill","yellow");
+                    //添加提示框的div  
+                    var tooltip = d3.select("body").append("div")  
+                                    .attr("class","tooltip") //用于css设置类样式  
+                                    .attr("opacity",0.0);
+                    //设置tooltip文字  
+                    tooltip.html(root.features[i]["properties"]["name"])  
+                    //设置tooltip的位置(left,top 相对于页面的距离)   
+                            .style("left",(d3.event.pageX)+"px")  
+                            .style("top",(d3.event.pageY+20)+"px")  
+                            .style("opacity",1.0);  
+                })
+                .on("mouseout",function(d,i){
+                    d3.select(this)
+                        .attr("fill",color(i));
+                    d3.select(".tooltip").remove(); 
+                });
+            
+        });
 
-</script>
+    </script>
 </body>
 </html>
