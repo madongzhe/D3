@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>简单饼图</title>
+    <script src="../js/d3.v4.min.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        var width = 500;
+        var height = 500;
+        var margin = {
+        left: 50,
+        top: 30,
+        right: 50,
+        botton: 30
+        }
+        var g_width = width - margin.left - margin.right;
+        var g_height = height - margin.top - margin.botton;
+
+        var svg = d3.select("#app")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+        var g = svg
+        .append("g")
+        .attr("width", g_width)
+        .attr("height", g_height)
+        .attr("transform", "translate(" + g_width/2 + "," + g_height/2 + ")");
+
+        var data = [2, 9, 5, 11, 8, 2];
+
+        var datapie = d3.pie()(data);
+        console.log(datapie)
+        var outerRadius = g_width/2; //外半径
+        var innerRadius = 60; //内半径，为0则中间没有空白
+
+        var arcs = d3.arc()  //弧生成器
+            .innerRadius(innerRadius)   //设置内半径
+            .outerRadius(outerRadius);  //设置外半径
+        var color =d3.scaleOrdinal(d3.schemeCategory10);
+
+        g.selectAll("path")
+                .data(datapie)
+                .enter()
+                .append("path")
+                .attr("d",arcs)
+                .attr('fill',function(d,i){  
+                    return color(i);  
+                })
+                .on("mouseover", function(){
+                    d3.select(this).attr("d",arcs.outerRadius(g_width/2));
+                });
+
+            function arcTween(outerRadius, delay) {
+                // return function() {
+                //     d3.select(this).transition().delay(delay).attrTween("d", function(d) {
+                //     var i = d3.interpolate(d.outerRadius, outerRadius);
+                
+                d3.select(this).attr("d",d3.arc().outerRadius(200));
+                    // return function(t) { d.outerRadius = i(t);console.log(d); return arcs(d); };
+                    // });
+                // };
+            }
+    </script>
+</body>
+</html>
