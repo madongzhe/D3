@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>简单饼图</title>
+    <script src="../js/d3.v4.min.js"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        var width = 500;
+        var height = 500;
+        var margin = {
+            left: 50,
+            top: 50,
+            right: 50,
+            botton: 50
+        }
+        var g_width = width - margin.left - margin.right;
+        var g_height = height - margin.top - margin.botton;
+
+        var data = [[2, 9, 5, 11, 8, 200],[12, 19, 15, 11, 8, 100]];
+
+        var svg = d3.select("#app")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+        
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+            
+        var g = svg.selectAll("g")
+                .data(data)
+                .enter()
+                .append("g")
+                .attr("width", g_width)
+                .attr("height", g_height)
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+                .each(function(d,i){
+                    var outerRadius = g_width / (2 + 2*i); //外半径  
+                    var innerRadius = g_width / (3 + 4*i); //内半径，为0则中间没有空白  
+                    var arcs = d3.arc() //弧生成器
+                                .innerRadius(innerRadius) //设置内半径
+                                .outerRadius(outerRadius); //设置外半径
+                    d3.select(this)
+                        .selectAll("path")
+                        .data(d3.pie()(data[i]))
+                        .enter()
+                        .append("path")
+                        .attr("d", arcs)
+                        .attr('fill', function (d, i) {
+                            return color(i);
+                        })
+                        .on("mouseover", function (d, i) {
+                            d3.select(this).attr("d", arcs.outerRadius(outerRadius + 30).innerRadius(innerRadius));
+                            g.insert("text")
+                                .attr("x",d.data.toString().length*(-8)-10)
+                                .attr("y","5")
+                                .style("font-size","28px")
+                                .text(d.data+"个");
+                        })
+                        .on("mouseout", function (d, i) {
+                            d3.select(this).attr("d", arcs.outerRadius(outerRadius).innerRadius(innerRadius));
+                            d3.selectAll("text").remove();
+                        });
+                });
+
+    </script>
+</body>
+
+</html>

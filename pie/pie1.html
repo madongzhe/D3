@@ -13,11 +13,11 @@
     <div id="app"></div>
     <script>
         var width = 500;
-        var height = 500;
+        var height = 400;
         var margin = {
             left: 50,
             top: 50,
-            right: 50,
+            right: 200,
             botton: 50
         }
         var g_width = width - margin.left - margin.right;
@@ -31,12 +31,15 @@
             .append("g")
             .attr("width", g_width)
             .attr("height", g_height)
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            .attr("transform", "translate(" + (width-100) / 2 + "," + height / 2 + ")");
 
-        var data = [2, 9, 5, 11, 8, 200];
+        var dataname = ["Chrome", "Firefox", "IE", "Safari", "Edge", "Opera"];
+        var dataval = [64.72,12.21,7.71,6.29,4.18,2.31];
 
-        var datapie = d3.pie()(data);
-        console.log(datapie)
+        var datapie = d3.pie()
+                        .sort(null)             //不排序，不写则会从大到小，顺时针排序。 
+                        (dataval);
+                        
         var outerRadius = g_width / 2; //外半径
         var innerRadius = g_width / 4; //内半径，为0则中间没有空白
 
@@ -55,24 +58,77 @@
             })
             .on("mouseover", function (d, i) {
                 d3.selectAll("path").attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
-                d3.select("text").remove();
+                d3.select(".dataval").remove();
                 d3.select(this).attr("d", arcs.outerRadius(g_width / 2 + 30).innerRadius(g_width / 4));
                 g.append("text")
                     .attr("x",d.data.toString().length*(-6)-10)
                     .attr("y","5")
+                    .attr("class","dataval")
                     .style("font-size","28px")
-                    .text(d.data+"个");
+                    .text(d.data+"%");
             })
             .on("mouseout", function (d, i) {
                 d3.selectAll("path").attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
-                d3.select("text").remove();
+                d3.select(".dataval").remove();
             });
         d3.select("path").attr("d", arcs.outerRadius(g_width / 2 + 30).innerRadius(g_width / 4));
         g.append("text")
                     .attr("x",datapie[0].data.toString().length*(-6)-10)
                     .attr("y","5")
+                    .attr("class","dataval")
                     .style("font-size","28px")
-                    .text(datapie[0].data+"个");
+                    .text(datapie[0].data+"%");
+        
+        var label=svg.selectAll('.label')      //添加右上角的标签  
+                    .data(datapie)  
+                    .enter()  
+                    .append('g')  
+                    .attr("transform","translate("+(width-80)+","+10+")");     
+            label.append('rect')        //标签中的矩形  
+                    .style('fill',function(d,i){  
+                        return color(i);  
+                    })  
+                    .attr('x',function(d,i){  
+                        return 0;  
+                    })  
+                    .attr("y",function(d,i){  
+                        return 16+i*30;  
+                    })  
+                    // .attr('rx','5')     //rx=ry 会出现圆角  
+                    // .attr('ry','5')  
+                    .attr('width',5)  
+                    .attr('height',5);  
+            label.append('text')            //标签中的文字  
+                    .attr('x',function(d,i){  
+                        return 8;              //因为rect宽度是50，所以把文字偏移25,在后面再将文字设置居中  
+                    })  
+                    .attr("y",function(d,i){          
+                        return 15+10+i*30;  
+                    })  
+                    .text(function(d,i){  
+                        return dataname[i];  
+                    })  
+                    .style({  
+                        "font-size":"10px",  
+                        "text-anchor":"middle",  
+                        'fill':"white",  
+                        "font-weight":600  
+                    })
+                    .on("mouseover", function (d, i) {
+                        d3.selectAll("path").attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
+                        d3.select(".dataval").remove();
+                        d3.select(this).attr("d", arcs.outerRadius(g_width / 2 + 30).innerRadius(g_width / 4));
+                        g.append("text")
+                            .attr("x",d.data.toString().length*(-6)-10)
+                            .attr("y","5")
+                            .attr("class","dataval")
+                            .style("font-size","28px")
+                            .text(d.data+"%");
+                    })
+                    .on("mouseout", function (d, i) {
+                        d3.selectAll("path").attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
+                        d3.select(".dataval").remove();
+                    });
     </script>
 </body>
 
