@@ -27,52 +27,43 @@
             .append("svg")
             .attr("width", width)
             .attr("height", height);
-        var g = svg
-            .append("g")
-            .attr("width", g_width)
-            .attr("height", g_height)
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        var data = [2, 9, 5, 11, 8, 200];
+       
+        var data = [12, 9, 5, 11, 8, 100];
 
         var datapie = d3.pie()(data);
         console.log(datapie)
         var outerRadius = g_width / 2; //外半径
         var innerRadius = g_width / 4; //内半径，为0则中间没有空白
 
+        var g = svg.selectAll(".arc")
+            .data(datapie)
+            .enter()
+            .append("g")
+            .attr("class", "arc")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
         var arcs = d3.arc() //弧生成器
             .innerRadius(innerRadius) //设置内半径
             .outerRadius(outerRadius); //设置外半径
         var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-        g.selectAll("path")
-            .data(datapie)
-            .enter()
-            .append("path")
+        g.append("path")
             .attr("d", arcs)
             .attr('fill', function (d, i) {
                 return color(i);
             })
             .on("mouseover", function (d, i) {
                 d3.selectAll("path").attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
-                d3.select("text").remove();
                 d3.select(this).attr("d", arcs.outerRadius(g_width / 2 + 30).innerRadius(g_width / 4));
-                g.append("text")
-                    .attr("x",d.data.toString().length*(-6)-10)
-                    .attr("y","5")
-                    .style("font-size","28px")
-                    .text(d.data+"个");
             })
             .on("mouseout", function (d, i) {
-                d3.selectAll("path").attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
-                d3.select("text").remove();
+                d3.select(this).attr("d", arcs.outerRadius(g_width / 2).innerRadius(g_width / 4));
             });
-        d3.select("path").attr("d", arcs.outerRadius(g_width / 2 + 30).innerRadius(g_width / 4));
         g.append("text")
-                    .attr("x",datapie[0].data.toString().length*(-6)-10)
-                    .attr("y","5")
-                    .style("font-size","28px")
-                    .text(datapie[0].data+"个");
+            .attr("transform", function(d) { return "translate(" + arcs.centroid(d) + ")"; })
+            .attr("dy", ".35em")
+            .text(function(d) { return d.data; });
+        d3.select("path").attr("d", arcs.outerRadius(g_width / 2 + 30).innerRadius(g_width / 4));
     </script>
 </body>
 

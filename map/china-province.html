@@ -54,60 +54,6 @@
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-<<<<<<< HEAD
-        
-        var projection = d3.geoMercator()
-                            .center([107, 31])
-                            .scale(600)
-                            .translate([width/2, height/2]);
-        
-        var path = d3.geoPath()
-                        .projection(projection);
-        
-        
-        var color = d3.scaleOrdinal(d3.schemeCategory20);;
-        
-        
-        d3.json("../json/china-province.json", function(error, root) {
-            
-            if (error){
-                return console.error(error);
-            } 
-                
-            // console.log(root.features);
-            
-            svg.selectAll("path")
-                .data( root.features )
-                .enter()
-                .append("path")
-                .attr("stroke","#000")
-                .attr("stroke-width",1)
-                .attr("fill", function(d,i){
-                    return color(i);
-                })
-                .attr("d", path )
-                .on("mouseover",function(d,i){
-                    d3.select(this)
-                        .attr("fill","yellow");
-                    //添加提示框的div  
-                    var tooltip = d3.select("body").append("div")  
-                                    .attr("class","tooltip") //用于css设置类样式  
-                                    .attr("opacity",0.0);
-                    //设置tooltip文字  
-                    tooltip.html(root.features[i]["properties"]["name"])  
-                    //设置tooltip的位置(left,top 相对于页面的距离)   
-                            .style("left",(d3.event.pageX)+"px")  
-                            .style("top",(d3.event.pageY+20)+"px")  
-                            .style("opacity",1.0);  
-                })
-                .on("mouseout",function(d,i){
-                    d3.select(this)
-                        .attr("fill",color(i));
-                    d3.select(".tooltip").remove(); 
-                });
-            
-        });
-=======
 	
 	var projection = d3.geoMercator()
 						.center([107, 31])
@@ -160,7 +106,6 @@
             });
 		
 	});
->>>>>>> a5a31eabaaf5e3c440a5b8bab82c7c85ad42bf4e
 
     </script>
 </body>
