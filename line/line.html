@@ -6,13 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>线性图表</title>
+  <!-- <srcipt src="../js/d3.v4.min.js"></srcipt> -->
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+        .title {
+            font-family: Arial, 微软雅黑;
+            font-size: 18px;
+            text-anchor: middle;
+        }
+    
+        .subTitle {
+            font-family: Arial, 宋体;
+            font-size: 12px;
+            text-anchor: middle;
+            fill: #666
+        }
+    
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: black;
+            shape-rendering: crispEdges;
+        }
+    
+        .axis text {
+            font-family: sans-serif;
+            font-size: 11px;
+            fill: #999;
+        }
+    
+        .inner_line path,
+        .inner_line line {
+            fill: none;
+            stroke: #E7E7E7;
+            shape-rendering: crispEdges;
+        }
+    
+        .legend {
+            font-size: 12px;
+            font-family: Arial, Helvetica, sans-serif
+        }
+      </style>
 </head>
 
 <body>
   <div id="app" style="width: 500px;height: 500px;"></div>
-  <!-- <srcipt src="js/d3.v4.min.js"></srcipt> -->
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  
   <script>
+
+    var data = [2, 9, 5, 11, 8, 2];
+
     var width = 500;
     var height = 250;
     var margin = {
@@ -28,11 +71,58 @@
       .append("svg")
       .attr("width", width)
       .attr("height", height);
+    
+    //添加背景
+    svg.append("g")
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "#FFF")
+        .style("stroke-width", 2)
+        .style("stroke", "#E7E7E7");
+
+        //横坐标轴比例尺
+        var xScale = d3.scaleLinear()
+            .domain([0, data.length - 1])
+            .range([margin.left, width - margin.left]);
+
+        //纵坐标轴比例尺
+        var yScale = d3.scaleLinear()
+            .domain([0, d3.max(data)])
+            .range([height - margin.botton, margin.top]);
+
+        //定义横轴网格线
+        var xInner = d3.axisBottom()
+            .scale(xScale)
+            .tickSize(-(g_height), 0, 0)
+            .tickFormat("")
+            .ticks(data.length);
+
+        //添加横轴网格线
+        var xInnerBar = svg.append("g")
+            .attr("class", "inner_line")
+            .attr("transform", "translate(0," + (height - margin.top) + ")")
+            .call(xInner);
+
+        //定义纵轴网格线
+        var yInner = d3.axisLeft()
+            .scale(yScale)
+            .tickSize(-(g_width), 0, 0)
+            .tickFormat("")
+            .ticks(10);
+
+        //添加纵轴网格线
+        var yInnerBar = svg.append("g")
+            .attr("class", "inner_line")
+            .attr("transform", "translate(" + margin.left + ",0)")
+            .call(yInner);
+
+    // 画线
     var g = svg
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var data = [2, 9, 5, 11, 8, 2];
 
     var scale_x = d3.scaleLinear()
       .domain([0, data.length - 1])
