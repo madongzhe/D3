@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>画多个折线图</title>
+    <script type="text/javascript" src="../js/d3.v4.min.js"></script>
+</head>
+
+<style>
+    body {
+        font: 10px sans-serif;
+    }
+
+    #app {
+        position: relative;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+
+    .dot {
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+
+    .tip {
+        position: absolute;
+        border: 1px #ccc solid;
+        background-color: #fff;
+        min-width: 30px;
+        padding: 2px;
+        text-align: center;
+        border-radius: 3px;
+    }
+</style>
+
+<body>
+    <div id="app"></div>
+    <script>
+        var data = [
+            [new Date(2001, 0, 1), new Date(2002, 0, 1), new Date(2003, 0, 1), new Date(2004, 0, 1),
+                new Date(2005, 0, 1), new Date(2006, 0, 1)
+            ],
+            [
+                [4, 8, 6, 13, 8, 6],
+                [5, 6, 8, 3, 9, 11]
+            ]
+        ];
+
+        var margin = {
+                top: 20,
+                right: 30,
+                bottom: 30,
+                left: 40
+            },
+            width = 500 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
+
+        var x = d3.scaleTime()
+            .domain(d3.extent(data[0]))
+            .range([0, width]);
+
+        var y = d3.scaleLinear()
+            .domain([0,d3.max(data[1][0])])
+            .range([height, 0]);
+
+        var xAxis = d3.axisBottom()
+            .scale(x);
+
+        var yAxis = d3.axisLeft()
+            .scale(y);
+
+        var line = d3.line()
+            .x(function (d) {
+                return x(d[0]);
+            })
+            .y(function (d) {
+                return y(d[1]);
+            });
+
+        var svg = d3.select("#app")
+            .append("svg")
+            .datum(d3.zip(data[0],data[1][0]))
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+
+        svg.append("path")
+            .attr("class", "line")
+            .attr("d", line);
+
+        svg.selectAll(".dot")
+            .data(d3.zip(data[0],data[1][0]))
+            .enter().append("circle")
+            .attr("class", "dot")
+            .attr("fill", "white")
+            .attr("cx", line.x())
+            .attr("cy", line.y())
+            .attr("r", 3.5)
+            .on('mouseover', function (d) {
+                // 添加提示
+                d3.select("#app")
+                    .append("div")
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY + 20) + "px")
+                    .attr("class", "tip")
+                    .text(d[1]);
+
+                d3.select(this)
+                    .attr("fill", "#ccc")
+                    .attr("r", 4.5);
+            })
+            .on("mouseout", function (d, i) {
+                // 移除提示框
+                d3.select(".tip").remove();
+                d3.select(this)
+                    .attr("fill", "white")
+                    .attr("r", 3.5);
+            });
+    </script>
+</body>
+
+</html>

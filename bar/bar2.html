@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>柱状图1</title>
+    <title>柱状图2</title>
     <script src="../js/d3.v4.min.js"></script>
     <style>
-        .bar{
-            fill: blue;
-        }
+    .tip{
+        position: absolute;
+        border: 1px #ccc solid;
+        background-color: #fff;
+        min-width: 30px;
+        padding: 2px;
+        text-align: center;
+        border-radius: 3px;
+    }
     </style>
 </head>
 <body>
@@ -17,8 +23,8 @@
 
     <script>
 
-        var width = 500, height = 300,
-            margin = {top: 20, right: 20, bottom: 30, left: 40},
+        var width = 500, height = 380,
+            margin = {top: 80, right: 20, bottom: 30, left: 40},
             g_width = width - margin.left - margin.right,
             g_height = height - margin.top - margin.bottom;
 
@@ -29,6 +35,13 @@
                     .append("svg")
                     .attr("width",width)
                     .attr("height",height);
+
+        // 添加标题
+        svg.append("text")
+            .attr("x",width/2)
+            .attr("y",40)
+            .attr("text-anchor", "middle")
+            .text("2017年浏览器使用比例");
 
         var g = svg.append("g")
                     .attr("width",g_width)
@@ -49,22 +62,31 @@
             g.append("g")
                 .attr("class", "axis axis--y")
                 .call(d3.axisLeft(y).ticks(10, "%"));
-                // .append("text")
-                // .attr("transform", "rotate(-90)")
-                // .attr("y", 6)
-                // .attr("dy", "0.71em")
-                // .attr("text-anchor", "end")
-                // .attr("fill","#000")
-                // .text("Frequency");
 
             g.selectAll(".bar")
                 .data(data)
                 .enter().append("rect")
-                .attr("class", "bar")
+                .attr("fill", "blue")
                 .attr("x", function(d) { return x(d[0]); })
                 .attr("y", function(d) { return y(d[1]/100); })
                 .attr("width", x.bandwidth())
-                .attr("height", function(d) { return g_height - y(d[1]/100); });
+                .attr("height", function(d) { return g_height - y(d[1]/100); })
+                .on("mouseover",function(d,i){
+                    d3.select(this).attr("fill", "#00C");
+                    d3.select("#app")
+                    .append("div")
+                    .style("left",(x(d[0])+x.bandwidth())+"px")  
+                    .style("top",(y(d[1]/100)-25+margin.top)+"px")
+                    .attr("class","tip")
+                    .text(d[1]+"%");
+                })
+                .on("mouseout", function (d, i) {
+                    d3.select(this).attr("fill", "blue");
+                    // 移除提示框
+                    d3.select(".tip").remove();
+                });
+
+
         });
 
     </script>
