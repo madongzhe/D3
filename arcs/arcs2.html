@@ -1,12 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
     <title>弧度2</title>
+    <!-- <script src="https://d3js.org/d3.v3.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
+
+<style type="text/css">
+    #chartArea {
+        border: 2px dashed black;
+        height: 500px;
+        width: 500px;
+    }
+
+    path {
+        fill-rule: evenodd;
+        /* fill: #aaa; */
+        /* fill-opacity: .7; */
+        stroke: #666;
+        stroke-width: 5.5px;
+    }
+
+    #valueOutput {
+        fill: maroon;
+    }
+</style>
+
 <body>
-    
+    <div id="chartArea"></div>
 </body>
+
+<script type="text/javascript">
+    var divH = parseInt(d3.select("#chartArea").style("height"));
+    var divW = parseInt(d3.select("#chartArea").style("width"));
+
+    var margin = {
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
+    };
+    var w = divW - margin.left - margin.right;
+        h = divH - margin.top - margin.bottom;
+        //   x = d3.scale.ordinal().domain(d3.range(3)).rangePoints([0, w], 2); //v3
+        x = d3.scaleOrdinal().domain(d3.range(3)).range([0, w], 2); //v4
+
+    var fields = [{
+            name: "seconds",
+            value: 0,
+            size: 60,
+            order: 0
+        },
+        {
+            name: "minutes",
+            value: 0,
+            size: 60,
+            order: 1
+        },
+        {
+            name: "hours",
+            value: 0,
+            size: 24,
+            order: 2
+        }
+    ];
+    var arc_colors = ["#F3A54A", "#AA7CAA", "#CCDE66"]
+    var outerRadiusInit = w / 2.2;
+    var arcWidth = 35;
+    var innerRadiusInit = outerRadiusInit - arcWidth;
+
+    var arc = d3.arc()
+        .innerRadius(function (d) {
+            return innerRadiusInit - d.order * arcWidth;
+        })
+        .outerRadius(function (d) {
+            return outerRadiusInit - d.order * arcWidth;
+        })
+        .startAngle(0)
+        .endAngle(function (d) {
+            return (d.value / d.size) * 2 * Math.PI;
+        });
+
+    var svg = d3.select("#chartArea").append("svg:svg")
+        .attr("width", w + margin.left + margin.right)
+        .attr("height", h + margin.top + margin.bottom)
+        .append("svg:g")
+        .attr("transform", "translate(" + margin.left + "," + (margin.top + h / 2) + ")");
+
+    var startBool = true;
+
+    svg.append("text")
+        .text("start")
+        .attr("id", "valueOutput")
+        .attr("text-anchor", "middle")
+        .attr("transform", "translate(" + w / 2 + ",0)")
+        .style('font-size','28px')
+        .on("click", function () {
+            d3.select(this)
+                .attr("fill", "teal");
+            startBool = !startBool;
+            console.log(startBool);
+        });
+
+    setInterval(function () {
+        var d = new Date();
+
+        fields[0].previous = fields[0].value;
+        fields[0].value = d.getSeconds();
+        fields[1].previous = fields[1].value;
+        fields[1].value = d.getMinutes();
+        fields[2].previous = fields[2].value;
+        fields[2].value = d.getHours();
+
+        var timeString = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        d3.select('#valueOutput').html(timeString);
+
+        var path = svg.selectAll("path")
+            .data(fields.filter(function (d) {
+                return d.value;
+            }), function (d) {
+                return d.name;
+            });
+
+        path.enter().append("svg:path")
+            .attr("transform", function (d, i) {
+                return "translate(" + h / 2 + ",0)";
+            })
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(1000)
+            .attrTween("d", arcTween)
+            .attr("fill", function (d, i) {
+                return arc_colors[i]
+            });
+
+        path.transition()
+            .ease(d3.easeLinear)
+            .duration(1000)
+            .attrTween("d", arcTween);
+
+        path.exit().transition()
+            .ease(d3.easeLinear)
+            .duration(750)
+            .attrTween("d", arcTween)
+            .remove();
+
+    }, 1000);
+
+    function arcTween(b) {
+        var i = d3.interpolate({
+            value: b.previous
+        }, b);
+        return function (t) {
+            return arc(i(t));
+        };
+    }
+</script>
+
 </html>

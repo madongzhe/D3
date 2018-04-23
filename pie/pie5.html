@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>比例图</title>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<body>
+
+<script>
+
+var width = 960,
+    height = 500,
+    τ = 2 * Math.PI; // http://tauday.com/tau-manifesto
+
+var arc = d3.arc()
+    .innerRadius(176)
+    .outerRadius(246)
+    .startAngle(0);
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+
+// 添加背景弧，从0到100% (τ).
+var background = svg.append("path")
+    .datum({endAngle: τ})
+    .style("fill", "#6b6b6b")
+    .attr("d", arc);
+
+// 在橙色中添加前景弧，目前显示为12.7%
+var foreground = svg.append("path")
+    .datum({endAngle: .127 * τ})
+    .style("fill", "orange")
+    .style("stroke", "white")
+    .style("stroke-width", "2px")
+    .style("opacity", .5)
+    .attr("d", arc);
+
+var text = svg.append("text")
+        .text("start")
+        .attr("id", "valueOutput")
+        .attr("text-anchor", "middle")
+        // .attr("transform", "translate(" + width / 2 + ",0)")
+        .style('font-size','28px')
+
+// 每隔一段时间，就开始向一个新的随机角度过渡。使用transition.call（与selection.call相同）这样我们就可以封装逻辑在下面的一个单独的函数中对弧进行渐变。
+setInterval(function() {
+    var r = Math.random();
+    foreground.transition()
+        .duration(500)
+        .call(arcTween, r * τ);
+    text.transition()
+        .duration(500)
+        .call(textTween,r);
+}, 1000);
+
+// 在指定的转换的“d”属性上创建补间，将任何选定的弧从当前的角度转换为指定的新角度。
+function arcTween(transition, newAngle) {
+    transition.attrTween("d", function(d) {
+        var interpolate = d3.interpolate(d.endAngle, newAngle);
+        return function(t) {
+            d.endAngle = interpolate(t);
+            return arc(d);
+        };
+    });
+}
+
+function textTween(transition, newAngle){
+    console.log(newAngle);
+    transition.text( parseInt(newAngle * 100)+'%' );
+}
+
+</script>
+
+
