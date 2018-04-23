@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <title>Top Internet Countries Visualization</title>
+    <style>
+      body {
+        margin: 0px;
+      }
+      .domain {
+        display: none;
+      }
+      /* .tick line {
+        stroke: #00f;
+      } */
+      .tick text {
+        fill: #fff;
+        font-size: 8pt;
+        font-family: sans-serif;
+      }
+      .axis-label {
+        fill: #fff;
+        font-size: 18pt;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="960" height="500"></svg>
+    <script>
+
+      const xValue = function(d){return d[0]};
+    //   const xLabel = 'State';
+      const yValue = function(d){return d[1]};
+      const yLabel = '今日收入趋势';
+      const margin = { left: 50, right: 70, top: 80, bottom: 50 };
+
+      const svg = d3.select('svg');
+      const width = svg.attr('width');
+      const height = svg.attr('height');
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g')
+          .attr('transform', `translate(${margin.left},${margin.top})`);
+      const xAxisG = g.append('g')
+          .attr('transform', `translate(0, ${innerHeight})`);
+      const yAxisG = g.append('g');
+
+    //   xAxisG.append('text')
+    //       .attr('class', 'axis-label')
+    //       .attr('x', innerWidth / 2)
+    //       .attr('y', 90)
+    //       .text(xLabel);
+
+      yAxisG.append('text')
+            .attr('class', 'axis-label')
+            .attr('x', 0)
+            .attr('y', -20)
+            //   .attr('transform', `rotate(-90)`)
+            .style('text-anchor', 'start')
+            .text(yLabel);
+
+      const xScale = d3.scaleBand()
+                        .paddingInner(0.6)
+                        .paddingOuter(0.4);
+      const yScale = d3.scaleLinear();
+
+      const xAxis = d3.axisBottom()
+                        .scale(xScale)
+                        .tickSize(-innerHeight);
+
+      const yTicks = 10;
+      const yAxis = d3.axisLeft()
+                        .scale(yScale)
+                        .ticks(yTicks)
+                        .tickPadding(15)
+                        // .tickFormat(d3.format('.0s'))
+                        .tickSize(-innerWidth);
+    
+      d3.json('data/bar4.json', function(error, data){
+
+        xScale
+          .domain(data.map(xValue))
+          .range([0, innerWidth]);
+        
+        yScale
+          .domain([0, d3.max(data, function(d){return yScale(yValue(d))})])
+          .range([innerHeight, 0])
+          .nice(yTicks);
+
+        //定义一个线性渐变  
+        var a = d3.rgb(255,0,0);    //红色  
+        var b = d3.rgb(0,255,0);    //绿色  
+        var defs = svg.append("defs");  
+        
+        var linearGradient = defs.append("linearGradient")  
+                                .attr("id","linearColor")  
+                                .attr("x1","0%")  
+                                .attr("y1","0%")  
+                                .attr("x2","0%")  
+                                .attr("y2","100%");  
+            
+        var stop1 = linearGradient.append("stop")  
+                        .attr("offset","0%")  
+                        .style("stop-color",'#02FFFE');  
+            
+        var stop2 = linearGradient.append("stop")  
+                        .attr("offset","100%")  
+                        .style("stop-color",'#0364FF');  
+
+        g.selectAll('rect').data(data)
+                            .enter().append('rect')
+                            .attr('x', function(d){return xScale(xValue(d))})
+                            .attr('y', function(d){return yScale(yValue(d))})
+                            .attr('width', function(d){return xScale.bandwidth()})
+                            .attr('height', function(d){return innerHeight - yScale(yValue(d))})
+                            .style("fill","url(#" + linearGradient.attr("id") + ")");  
+
+
+        xAxisG.call(xAxis);
+        xAxisG.selectAll('.tick line').remove();
+        xAxisG.selectAll('.tick text')
+                // .attr('transform', 'rotate(-45)')
+                .attr('transform', 'translate(0,10)')
+                .attr('text-anchor', 'middle')
+                .attr('alignment-baseline', 'middle')
+                .attr('x', -5)
+                .attr('y', 6)
+                .attr('dy', 0);
+
+        yAxisG.call(yAxis);
+        yAxisG.selectAll('.tick line')
+                .attr("stroke",function(d,i){return i>0?"#00f":"#ccc"})
+                .attr('stroke-width', function(d,i){return i>0?"1":"3"});
+      });
+    </script>
+  </body>
+</html>

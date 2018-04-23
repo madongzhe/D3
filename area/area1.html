@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://unpkg.com/datalib@1.8.0/datalib.min.js"></script>
+    <script src="https://unpkg.com/d3-area-label@1.2.0"></script>
+    <title>测试</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        .area-label {
+            font-family: sans-serif;
+            fill-opacity: 0.7;
+            fill: white;
+        }
+
+        path:hover {
+            fill-opacity: 1;
+            fill: black;
+        }
+
+        path {
+            fill-opacity: 0.8;
+            stroke-width: 0.5;
+        }
+
+        text {
+            pointer-events: none;
+        }
+
+        .axis--major .tick text,
+        .legend text,
+        .tooltip text {
+            fill: #585858;
+            font-family: sans-serif;
+            font-size: 16pt;
+        }
+
+        .axis--minor .tick text {
+            display: none;
+        }
+
+        .axis--major .tick line {
+            stroke: #000000.92a;
+            stroke-width: 1px;
+        }
+
+        .axis--minor .tick line {
+            stroke: #eee;
+        }
+
+        .axis--y {
+            fill: #585858;
+            font-family: sans-serif;
+            font-size: 10pt;
+        }
+
+        .axis .domain {
+            display: none;
+        }
+
+        .axis-label,
+        .legend-label {
+            fill: #635F5D;
+            font-size: 16pt;
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <svg width="960" height="500"></svg>
+    <script>
+        const yLabel = 'Population';
+        const xLabel = 'Year';
+
+        // const row = d => {
+        //     d.Year = new Date(+d.year);
+        //     d["Advanced Economies"] = +d["Advanced Economies"];
+        //     d.Europe = +d.Europe;
+        //     d.G7 = +d.G7;
+        //     d["Other Advanced Countries"] = +d["Other advanced countries"];
+        //     return d;
+        // };
+        const row1 = d => {
+            d.Year = new Date(+d[0]);
+            d["Advanced Economies"] = +d[1];
+            d.Europe = +d[2];
+            d.G7 = +d[3];
+            d["Other Advanced Countries"] = +d[4];
+            return d;
+        };
+        // Load and summarize the data.
+        // d3.csv('U_S.csv', row, data => {
+        //     console.log(data)
+        //     render(data);
+        // });
+
+        d3.json('U_S.json', function (error, root) {
+            d3.map(root).each(row1);
+            console.log(root);
+            render(root);
+        });
+
+        var margin = {
+            top: 50,
+            bottom: 50,
+            left: 200,
+            right: 50
+        };
+
+        var svg = d3.select('svg');
+        var width = +svg.attr('width');
+        var height = +svg.attr('height');
+
+        var g = svg.append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+        var xAxisG = g.append('g')
+            .attr('class', 'axis');
+        var yAxisG = g.append('g')
+            .attr('class', 'axis axis--major axis--y');
+        var xAxisMinorG = xAxisG.append('g')
+            .attr('class', 'axis axis--minor');
+        var xAxisMajorG = xAxisG.append('g')
+            .attr('class', 'axis axis--major');
+        var marksG = g.append('g');
+
+        const keys = ["Advanced Economies", "Europe", "G7", "Other Advanced Countries"];
+
+        var stack = d3.stack()
+            .keys(keys);
+
+        var xValue = function (d) {
+            return d.Year;
+        };
+        var xScale = d3.scaleTime();
+        var yScale = d3.scaleLinear().range([0, 7]);
+        var colorScale = d3.scaleOrdinal()
+            .range(d3.schemeCategory10);
+
+
+
+        var xAxisMajor = d3.axisBottom().scale(xScale).tickFormat(d3.format('0'));
+        var xAxisMinor = d3.axisBottom().scale(xScale).ticks(30);
+        var yAxis = d3.axisLeft().scale(yScale).ticks(20);
+
+        var area = d3.area()
+            .x(d => xScale(xValue(d.data)))
+            .y0(d => yScale(d[0]))
+            .y1(d => yScale(d[1]))
+            .curve(d3.curveBasis);
+
+        // Render StreamGraph
+        function render(data) {
+            const stacked = stack(data)
+
+            // console.log(keys);
+            console.log(stacked);
+
+            var innerWidth = width - margin.right - margin.left;
+            var innerHeight = height - margin.top - margin.bottom;
+
+            xScale
+                .domain(d3.extent(data, xValue))
+                .range([0, innerWidth]);
+
+            yScale
+                .domain([
+                    d3.min(stacked, function (series) {
+                        return d3.min(series, function (d) {
+                            return d[0];
+                        });
+                    }),
+                    d3.max(stacked, function (series) {
+                        return d3.max(series, function (d) {
+                            return d[1];
+                        });
+                    })
+                ])
+                .range([innerHeight, 0]);
+
+            //check y domain and range
+            // console.log(yScale.domain())
+            // console.log(yScale.range())
+
+            colorScale.domain(d3.range(keys.length));
+
+            var paths = marksG.selectAll('path').data(stacked);
+            var pathsEnter = paths
+                .enter().append('path');
+            pathsEnter.merge(paths)
+                .attr('fill', function (d) {
+                    return colorScale(d.index);
+                })
+                .attr('stroke', function (d) {
+                    return colorScale(d.index);
+                })
+                .attr('d', area);
+
+            paths.select('title')
+                .merge(pathsEnter.append('title'))
+                .text(function (d) {
+                    return d.key;
+                })
+
+            var labels = marksG.selectAll('text').data(stacked)
+            labels
+                .enter().append('text')
+                .attr('class', 'area-label')
+                .merge(labels)
+                .text(function (d) {
+                    return d.key;
+                })
+                .attr('transform', d3.areaLabel(area).interpolateResolution(1000));
+            // console.log(innerHeight)
+            //TypeError: cannot read property TickSize of Null       
+            xAxisMajor.tickSize(-innerHeight);
+            xAxisMinor.tickSize(-innerHeight);
+
+            xAxisG.attr('transform', `translate(0,${innerHeight})`);
+            xAxisMajorG.call(xAxisMajor);
+            xAxisMinorG.call(xAxisMinor);
+        }
+    </script>
+</body>
+
+</html>

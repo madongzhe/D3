@@ -15,7 +15,7 @@
         .tooltip{  
             font-family:simsun;  
             font-size:16px;  
-            width:120;  
+            width:120px;  
             height:auto;  
             position:absolute;   
             text-align:center;  
@@ -61,7 +61,7 @@
     					.translate([width/2, height/2]);
 	
 	var path = d3.geoPath()
-					.projection(projection);
+				 .projection(projection);
 	
 	
 	var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -85,10 +85,11 @@
 				return color(i);
 			})
 			.attr("d", path )
-			.on("mouseover",function(d,i){
+			.on("mousemove",function(d,i){
                 d3.select(this)
                     .attr("fill","yellow");
                 //添加提示框的div  
+				d3.select(".tooltip").remove();
                 var tooltip = d3.select("body").append("div")  
                                 .attr("class","tooltip") //用于css设置类样式  
                                 .attr("opacity",0.0);

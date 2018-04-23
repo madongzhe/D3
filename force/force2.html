@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>力导向图2</title>
+</head>
+
+<body>
+    <canvas class="app" id="canvas" width="500" height="400"></canvas>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script>
+        var width=500;
+        var height=400;
+        var canvas1 = d3.select("canvas")
+            .attr("width", width)
+            .attr("height", height);
+        // console.log(canvas1.html);
+        var canvas = document.getElementById('canvas');
+        // console.log(canvas);
+        if (canvas.getContext) {
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "rgba(200,100,0,0.5)";
+            ctx.fillRect(10, 10, 55, 50);
+
+            ctx.strokeStyle = "#F22D0D";
+            ctx.lineWidth = "4";
+            //绘制圆
+            ctx.beginPath();
+            ctx.arc(100,100,40,0,Math.PI/2);
+            ctx.stroke(); 
+        }
+    </script>
+</body>
+
+</html>
