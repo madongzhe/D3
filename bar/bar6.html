@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+    body {
+      margin: 0;
+    }
+    .y.axis .domain {
+      display: none;
+    }
+    </style>
+  </head>
+  <body>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- <script src="https://unpkg.com/jeezy/lib/jeezy.min.js"></script> -->
+    <svg width="960" height="500"></svg>
+    <script>
+
+    var x_var = "name";
+
+    var alphabet = "abcdef".split("");
+    var names = ["Ann", "Bob", "Jean", "Chuck", "Denise", "Eric", "Frida", "Greg", "Hillary"];
+
+
+    const margin = { left: 50, right: 70, top: 80, bottom: 50 };
+
+    const svg = d3.select('svg');
+    const width = svg.attr('width');
+    const height = svg.attr('height');
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    var color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#a6d854","#ffd92f"])
+
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .domain(names)
+        .padding(.25);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    var x_axis = d3.axisBottom(x);
+
+    var y_axis = d3.axisRight(y)
+      .tickSize(width)
+      .tickFormat(function(d, i, ticks){ return i == ticks.length - 1 ? d + " value" : d; });
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(x_axis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(customYAxis);
+
+    var stack = d3.stack()
+        .keys(alphabet)
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone);
+
+    redraw(randomData());
+
+    // d3.interval(function(){
+      redraw(randomData());  
+    // }, 1000);
+
+    function redraw(data){
+
+      // update the y scale
+      y.domain([0, d3.max(data.map(function(d){ return d.sum }))]);
+
+      svg.select(".y")
+        .transition()
+          .call(customYAxis);
+
+      // each data column (a.k.a "key" or "series") needs to be iterated over
+      // the variable alphabet represents the unique keys of the stacks
+      alphabet.forEach(function(key, key_index){
+
+        var bar = svg.selectAll(".bar-" + key)
+            .data(stack(data)[key_index], function(d){ return d.data[x_var] + "-" + key; });
+
+        bar
+          .transition()
+            .attr("x", function(d){ return x(d.data[x_var]); })
+            .attr("y", function(d){ return y(d[1]); })
+            .attr("height", function(d){ return y(d[0]) - y(d[1]); });
+
+        bar.enter().append("rect")
+            .attr("class", function(d){ return "bar bar-" + key; })
+            .attr("x", function(d){ return x(d.data[x_var]); })
+            .attr("y", function(d){ return y(d[1]); })
+            .attr("height", function(d){ return y(d[0]) - y(d[1]); })
+            .attr("width", x.bandwidth())
+            .attr("fill", function(d){ return color(key); })
+
+      });    
+
+    }
+
+    function randomData(data){
+      return names.map(function(d){
+        var obj = {};
+        obj.name = d;
+        var nums = [];
+        alphabet.forEach(function(e){
+          var num = d3.randomUniform(1, 10)();
+          obj[e] = num;
+          nums.push(num);
+        });
+        obj.sum = d3.sum(nums);
+        return obj;
+      });
+    }
+
+    function customYAxis(g) {
+      g.call(y_axis);
+      g.selectAll(".tick:not(:first-of-type) line").attr("stroke", "#777").attr("stroke-dasharray", "2,2");
+      g.selectAll(".tick text").attr("x", 4).attr("dy", -4);
+    }
+
+    </script>
+  </body>
+</html>

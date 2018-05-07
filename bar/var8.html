@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+    <svg width="960" height="500"></svg>
+    <script>
+        // 容器大小边框设置
+            const margin = { left: 50, right: 70, top: 80, bottom: 50 };
+            const svg = d3.select('svg');
+            const width = svg.attr('width');
+            const height = svg.attr('height');
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+        // 颜色
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        
+    </script>
+</body>
+</html>
