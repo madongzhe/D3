@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+    <svg width="960" height="500"></svg>
+    <script>
+        // 容器大小边框设置
+            const margin = { left: 50, right: 70, top: 80, bottom: 50 };
+            const svg = d3.select('svg');
+            const width = svg.attr('width');
+            const height = svg.attr('height');
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+        // 数据
+        var data = {"2010":1121,"2011":531,"2012":333,"2013":322};
+        var val = d3.values(data);
+        // 矩形占位宽度包括空隙
+        var rectstep=innerWidth/val.length;
+        // 矩形所占宽度
+        var rectwidth = rectstep - 5;
+        // 颜色
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+        // Y轴比例尺
+        var y = d3.scaleLinear()
+                .domain([0,d3.max(val)])
+                .rangeRound([0,innerHeight])
+        // 画柱形
+        var rect = svg.selectAll("rect")
+                    .data(val)
+                    .enter()
+                    .append("rect")
+                    .attr("fill","steelblue")
+                    .attr("x",function(d,i){
+                        return margin.left+i*rectstep;
+                    })
+                    .attr("y",function(d,i){
+                        return height - margin.bottom - y(d);
+                    })
+                    .attr("width",rectwidth)
+                    .attr("height",function(d){
+                        return y(d);
+                    })
+    
+        
+    </script>
+</body>
+</html>
