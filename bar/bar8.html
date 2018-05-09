@@ -29,7 +29,7 @@
         // Y轴比例尺
         var y = d3.scaleLinear()
                 .domain([0,d3.max(val)])
-                .rangeRound([0,innerHeight])
+                .rangeRound([innerHeight,0])
         // 画柱形
         var rect = svg.selectAll("rect")
                     .data(val)
@@ -40,14 +40,16 @@
                         return margin.left+i*rectstep;
                     })
                     .attr("y",function(d,i){
-                        return height - margin.bottom - y(d);
+                        return y(d);
                     })
                     .attr("width",rectwidth)
                     .attr("height",function(d){
-                        return y(d);
+                        return innerHeight - y(d);
                     })
-    
-        
+
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+",0)")
+            .call(d3.axisLeft().scale(y).ticks(5))
     </script>
 </body>
 </html>
