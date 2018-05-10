@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>散点图</title>
+    <script src="../js/d3.v4.min.js"></script>
+</head>
+<body>
+    <svg width="700" height="400"></svg>
+    <script>
+        // 容器大小边框设置
+        const margin = { left: 50, right: 70, top: 80, bottom: 50 };
+        const svg = d3.select('svg');
+        const width = svg.attr('width');
+        const height = svg.attr('height');
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+        // 数据
+        var data = [[2,9],[4,3],[2,4],[5,2],[4,5]];
+        
+        // 比例尺
+        var x = d3.scaleLinear()
+            .domain([0,d3.max(data,function(d){
+                return d[0]
+            })])
+            .range([0,innerWidth]);
+            console.log(x(8))
+        var y = d3.scaleLinear()
+            .domain([0,d3.max(data,function(d){
+                return d[1]
+            })])
+            .range([innerHeight,0]);
+        // 画Y轴
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+","+margin.top+")")
+            .call(d3.axisLeft().scale(y));
+        // 画X轴
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+","+(innerHeight+margin.top)+")")
+            .call(d3.axisBottom().scale(x));
+        // 绘制圆
+        var cirlce = svg.selectAll("circle")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("cx",function(d,i){
+                        return margin.left + x(d[0])
+                    })
+                    .attr("cy",function(d,i){
+                        return y(d[1])+margin.top
+                    })
+                    .attr("fill","red")
+                    .attr("r",5)
+    </script>
+</body>
+</html>

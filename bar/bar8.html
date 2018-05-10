@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="../js/d3.v4.min.js"></script>
 </head>
 <body>
     <svg width="960" height="500"></svg>
@@ -20,16 +20,28 @@
         // 数据
         var data = {"2010":1121,"2011":531,"2012":333,"2013":322};
         var val = d3.values(data);
+        var key = d3.keys(data);
         // 矩形占位宽度包括空隙
         var rectstep=innerWidth/val.length;
         // 矩形所占宽度
         var rectwidth = rectstep - 5;
         // 颜色
         var color = d3.scaleOrdinal(d3.schemeCategory10);
-        // Y轴比例尺
+        // 比例尺
         var y = d3.scaleLinear()
                 .domain([0,d3.max(val)])
-                .rangeRound([innerHeight,0])
+                .rangeRound([innerHeight,0]);
+        var x = d3.scaleBand()
+                .domain(key)
+                .rangeRound([0,innerWidth]);
+        // 画Y轴
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+",0)")
+            .call(d3.axisLeft().scale(y).ticks(5));
+        // 画X轴
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+","+innerHeight+")")
+            .call(d3.axisBottom().scale(x));
         // 画柱形
         var rect = svg.selectAll("rect")
                     .data(val)
@@ -45,11 +57,25 @@
                     .attr("width",rectwidth)
                     .attr("height",function(d){
                         return innerHeight - y(d);
+                    });
+        var text = svg.selectAll("text")
+                    .data(val)
+                    .enter()
+                    .append("text") // 添加文字
+                    .text(function(d){
+                        return d;
                     })
-
-        svg.append("g")
-            .attr("transform", "translate("+margin.left+",0)")
-            .call(d3.axisLeft().scale(y).ticks(5))
+                    .attr("fill","white")
+                    .attr("text-anchor","middle")
+                    .attr("x",function(d,i){
+                        return margin.left + i*rectstep;
+                    })
+                    .attr("y",function(d){
+                        return y(d)
+                    })
+                    .attr("dx",rectstep/2)
+                    .attr("dy","1em")
+        
     </script>
 </body>
 </html>
