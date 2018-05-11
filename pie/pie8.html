@@ -5,7 +5,7 @@
 	<title>Months on an Arc</title>
 
 	<!-- D3.js -->
-	<script src="http://d3js.org/d3.v4.js" charset="utf-8"></script>
+	<script src="../js/d3.v4.min.js" charset="utf-8"></script>
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
 	
 	<!-- Month names -->
@@ -15,22 +15,13 @@
 		#chart{
 			text-align: center;
 		}
-		.monthArc {
-			fill: white;
-			stroke: #AAAAAA;
-		}
-		.monthText {
-			fill: #6B6B6B;
-			font-size: 13px;
-			font-family: 'Courgette', sans-serif;
-		}
-		svg{
+		/* svg{
 			animation: svgr 60s infinite;
 		}
 		@keyframes svgr{
 			from {transform: rotate(0deg)}
 			to {transform: rotate(360deg);} 
-		}
+		} */
 	</style>
   </head>
   <body>
@@ -50,78 +41,63 @@
 					
 		var svg = d3.select("#chart").append("svg")
 					.attr("width", (width + margin.left + margin.right))
-					.attr("height", (height + margin.top + margin.bottom))
-				  .append("g").attr("class", "wrapper")
-					.attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+					.attr("height", (height + margin.top + margin.bottom));
 
 		////////////////////////////////////////////////////////////
 		//////////////////// Scales & Data /////////////////////////
 		////////////////////////////////////////////////////////////
 
 		//The start date number and end date number of the months in a year
-		var monthData = [
-			{month: "子"},
-			{month: "癸"},
-			{month: "丑"},
-			{month: "艮"},
-			{month: "寅"},
-			{month: "申"},
-			{month: "卯"},
-			{month: "乙"},
-			{month: "辰"},
-			{month: "巽"},
-			{month: "巳"},
-			{month: "丙"},
-			{month: "午"},
-			{month: "丁"},
-			{month: "未"},
-			{month: "坤"},
-			{month: "申"},
-			{month: "午"},
-			{month: "午"},
-			{month: "午"},
-			{month: "午"},
-			{month: "午"},
-			{month: "午"},
-			{month: "午"},
-			{month: "午"}
-		];
-		var DateID =365/monthData.length-1;
-		//Creates a function that makes SVG paths in the shape of arcs with the specified inner and outer radius 
-		var arc = d3.arc()
-			.innerRadius(width*0.9/2) 
-			.outerRadius(width*0.9/2 + 30);
-		  
-		//Creates function that will turn the month data into start and end angles
-		var pie = d3.pie()
-			.value(function(d) { return DateID; })
-			.padAngle(.01)
-			.sort(null);
-
-		////////////////////////////////////////////////////////////
-		//////////////////// Create the Slices /////////////////////
-		////////////////////////////////////////////////////////////
-
-		//画弧
-		svg.selectAll(".monthArc")
-			.data(pie(monthData))
-		    .enter().append("path")
-			.attr("class", "monthArc")
-			.attr("id", function(d,i) { return "monthArc_"+i; })
-			.attr("d", arc);
+		var data1 = ["东","南","西","北"];
+		var data2 = ["乾","坎","艮","震","巽","离","乾","兑"];
+		var monthData = ["子","癸","丑","艮","寅","申","卯","乙","辰","巽","巳","丙","午",
+			"丁","未","坤","申","午","午","午","午","午","午","午","午"];
 			
-		//在弧中附加月份名称
-		svg.selectAll(".monthText")
-			.data(monthData)
-		    .enter().append("text")
-			.attr("class", "monthText")
-			.attr("x", -5) //Move the text from the start angle of the arc
-			.attr("dy", 18) //Move the text down
-		    .append("textPath")
-			.attr("startOffset","70%")
-			.style("text-anchor","middle")
-			.attr("xlink:href",function(d,i){return "#monthArc_"+i;})
-			.text(function(d){return d.month;});	
+			pies(data1,0.5,1);
+			pies(data2,0.7,2);
+			pies(monthData,0.9,3);
+
+		function pies(data,r,n){
+			var DateID =365/data.length-1;
+			//创建一个函数，指定内部和外部半径
+			var arc = d3.arc()
+				.innerRadius(width*r/2) 
+				.outerRadius(width*r/2 + 30);
+			
+			//创建函数，将月数据转换为开始和结束角
+			var pie = d3.pie()
+				.value(function(d) { return DateID; })
+				.padAngle(.01)
+				.sort(null);
+			var g = svg.append("g").attr("class", "wrapper"+n)
+					   .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+			//画弧
+			console.log(g.selectAll(".monthArc"));
+			g.selectAll(".monthArc")
+				.data(pie(data))
+				.enter().append("path")
+				.attr("class", "monthArc")
+				.attr("id", function(d,i) { return "monthArc_"+n+i; })
+				.attr("d", arc)
+				.attr("fill","white")
+				.attr("stroke","#AAAAAA");
+				
+			//在弧中附加文字
+			g.selectAll(".monthText")
+				.data(data)
+				.enter().append("text")
+				.attr("class", "monthText")
+				.attr("x", -5) //将文本从弧的起始角移动
+				.attr("dy", 18) //文本向下移动
+				.append("textPath")
+				.attr("startOffset","70%")
+				.style("text-anchor","middle")
+				.attr("xlink:href",function(d,i){return "#monthArc_"+n+i;})
+				.text(function(d){return d;})
+				.attr("fill","#6B6B6B")
+				.attr("font-size","13px")
+				.attr("font-family","'Courgette', sans-serif");
+		}
 	</script>
 	
   </body>
