@@ -1,41 +1,63 @@
-country,religion,population
-China,Christian,68410000
-China,Muslim,24690000
-China,Unaffiliated,700680000
-China,Hindu,20000
-China,Buddhist,244130000
-China,Folk Religions,294320000
-China,Other Religions,9080000
-China,Jewish,0
-India,Christian,31130000
-India,Muslim,176190000
-India,Unaffiliated,870000
-India,Hindu,973750000
-India,Buddhist,9250000
-India,Folk Religions,5840000
-India,Other Religions,27560000
-India,Jewish,10000
-USA,Christian,243060000
-USA,Muslim,2770000
-USA,Unaffiliated,50980000
-USA,Hindu,1790000
-USA,Buddhist,3570000
-USA,Folk Religions,630000
-USA,Other Religions,1900000
-USA,Jewish,5690000
-Indonesia,Christian,23660000
-Indonesia,Muslim,209120000
-Indonesia,Unaffiliated,240000
-Indonesia,Hindu,4050000
-Indonesia,Buddhist,1720000
-Indonesia,Folk Religions,750000
-Indonesia,Other Religions,340000
-Indonesia,Jewish,0
-Brazil,Christian,173300000
-Brazil,Muslim,40000
-Brazil,Unaffiliated,15410000
-Brazil,Hindu,0
-Brazil,Buddhist,250000
-Brazil,Folk Religions,5540000
-Brazil,Other Religions,300000
-Brazil,Jewish,110000
+Country,Purpose,Number
+USA,Communications,318
+USA,Communications,2
+USA,Earth Observation,144
+USA,Earth Observation,1
+USA,Earth Science,1
+USA,Earth Space Science,1
+USA,Navigation Global Positioning,31
+USA,Space Observation,5
+USA,Space Science,22
+USA,Technology Demonstration,3
+USA,Technology Development,51
+China,Communications,36
+China,Earth Observation,80
+China,Earth Observation ,1
+China,Earth ObservationCommunications,1
+China,Navigation Global Positioning,22
+China,Space Science,12
+China,Technology Demonstration,1
+China,Technology Development,38
+Russia,Communications,77
+Russia,Earth Observation,17
+Russia,Earth Observation,1
+Russia,Earth Science,1
+Russia,Navigation Global Positioning,27
+Russia,Space Science,1
+Russia,Technology Development,9
+Multinational,Communications,50
+Multinational,Earth Observation,7
+Multinational,Space Science,9
+Japan,Communications,17
+Japan,Earth Observation,20
+Japan,Navigation Global Positioning,1
+Japan,Space Science,2
+Japan,Technology Development,20
+India,Communications,12
+India,CommunicationsNavigation,1
+India,Communications,1
+India,Earth Observation,15
+India,Earth Science,1
+India,Navigation Global Positioning,7
+India,Space Science,2
+India,Technology Development,3
+United Kingdom,Communications,32
+United Kingdom,Earth Observation,4
+United Kingdom,Technology Development,4
+ESA,Communications,1
+ESA,Earth Observation,10
+ESA,Navigation Global Positioning,18
+ESA,Space Science,6
+ESA,Technology Demonstration,2
+Canada,Communications,18
+Canada,Communications,1
+Canada,Earth Observation,2
+Canada,Earth Science,2
+Canada,Space Observation,2
+Canada,Space Science,3
+Canada,Technology Development,4
+Germany,Communications,4
+Germany,Earth Observation,13
+Germany,Earth Observation,1
+Germany,Earth Science,1
+Germany,Technology Development,5

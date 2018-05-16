@@ -1,37 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<meta charset='utf-8'>
 
 <head>
-    <meta charset="UTF-8">
-    <title>力导向图2</title>
+    <title>Simple Hierarchical Force (d3 v4; CSV; 72 Lines)</title>
+    <script src="../js/d3.v4.min.js"></script>
 </head>
 
-<body>
-    <canvas class="app" id="canvas" width="500" height="400"></canvas>
+<style>
+    circle {
+        fill: #05668D;
+        opacity: 0.6;
+        stroke-width: 2px;
+    }
 
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script>
-        var width=500;
-        var height=400;
-        var canvas1 = d3.select("canvas")
-            .attr("width", width)
-            .attr("height", height);
-        // console.log(canvas1.html);
-        var canvas = document.getElementById('canvas');
-        // console.log(canvas);
-        if (canvas.getContext) {
-            var ctx = canvas.getContext('2d');
-            ctx.fillStyle = "rgba(200,100,0,0.5)";
-            ctx.fillRect(10, 10, 55, 50);
+    line {
+        stroke: #05668D;
+        stroke-opacity: 0.3;
+        stroke-width: 2px;
+    }
+</style>
 
-            ctx.strokeStyle = "#F22D0D";
-            ctx.lineWidth = "4";
-            //绘制圆
-            ctx.beginPath();
-            ctx.arc(100,100,40,0,Math.PI/2);
-            ctx.stroke(); 
+<svg>
+    <g></g>
+</svg>
+
+<script>
+    var vWidth = 300;
+    var vHeight = 200;
+
+    // Prepare our physical space
+    var g = d3.select('svg').attr('width', vWidth).attr('height', vHeight).select('g');
+
+    // Get the data from our CSV file
+    d3.json('data/force2.json', function (error, vCsvData) {
+        if (error) throw error;
+
+        vData = d3.stratify()(vCsvData);
+        drawViz(vData);
+    });
+
+    function drawViz(vData) {
+        // 声明d3布局
+        var vLayout = d3.forceSimulation()
+                        .force('link', d3.forceLink().id(function (d) {
+                            return d.id;
+                        }))
+                        .force('charge', d3.forceManyBody())
+                        .force('center', d3.forceCenter(vWidth / 2, vHeight / 2));
+
+        // 布局+数据
+        var vRoot = d3.hierarchy(vData);
+        var vNodes = vRoot.descendants();
+        var vLinks = vRoot.links();
+
+        var vLines = g.selectAll('line')
+                    .data(vLinks)
+                    .enter()
+                    .append('line');
+        // 画圆
+        var vCircles = g.selectAll('circle')
+                    .data(vNodes)
+                    .enter()
+                    .append('circle')
+                    .attr('r', 12)
+                    .call(d3.drag()
+                    .on("start", function(d) {
+                            if (!d3.event.active) vLayout.alphaTarget(0.3).restart(); //设置目标α
+                            d.fx = d.x;
+                            d.fy = d.y;
+                        }) //d3.drag() 创建一个拖曳行为
+                    .on("drag", function(d) {
+                            d.fx = d3.event.x;
+                            d.fy = d3.event.y;
+                        })
+                    .on("end", function(d) {
+                                if (!d3.event.active) vLayout.alphaTarget(0);
+                                d.fx = null;
+                                d.fy = null;
+                            }));
+
+        // 屏幕作图
+        vLayout.nodes(vNodes)
+                .on('tick', ticked);
+        vLayout.force('link')
+                .links(vLinks);
+
+        // Animate on entry.
+        function ticked() {
+            vLines.attr('x1', function (d) {
+                    return d.source.x;
+                })
+                .attr('y1', function (d) {
+                    return d.source.y;
+                })
+                .attr('x2', function (d) {
+                    return d.target.x;
+                })
+                .attr('y2', function (d) {
+                    return d.target.y;
+                });
+
+            vCircles.attr('cx', function (d) {
+                    return d.x;
+                })
+                .attr('cy', function (d) {
+                    return d.y;
+                });
         }
-    </script>
-</body>
-
-</html>
+    }
+</script>
