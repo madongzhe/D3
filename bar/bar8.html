@@ -58,10 +58,12 @@
                     .attr("height",function(d){
                         return innerHeight - y(d);
                     });
-        var text = svg.selectAll("text")
+                    
+             svg.selectAll(".text")
                     .data(val)
                     .enter()
                     .append("text") // 添加文字
+                    .attr("class", "text")
                     .text(function(d){
                         return d;
                     })
@@ -74,8 +76,7 @@
                         return y(d)
                     })
                     .attr("dx",rectstep/2)
-                    .attr("dy","1em")
-        
+                    .attr("dy","1em");
     </script>
 </body>
 </html>

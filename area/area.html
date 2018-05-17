@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>区域图基础</title>
+    <script type="text/javascript" src="../js/d3.v4.min.js"></script>
+</head>
+<body>
+    <div id="chart"></div>
+    <script>
+        var width = 500, height = 380,
+            margin = {top: 80, right: 20, bottom: 30, left: 40},
+            g_width = width - margin.left - margin.right,
+            g_height = height - margin.top - margin.bottom;
+        // 数据集
+        var dataset = [80,120,140,70,60,90]
+        //生成指定大小的svg
+        var svg = d3.select("#chart")
+                    .append("svg")
+                    .attr("width",width)
+                    .attr("height",height);
+        
+        // 比例尺
+        var y = d3.scaleLinear()
+                .domain([0,d3.max(dataset)])
+                .rangeRound([g_height,0]);
+        var x = d3.scaleLinear()
+                .domain([0,dataset.length])
+                .rangeRound([0,g_width]);
+        // 画Y轴
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+","+margin.top+")")
+            .call(d3.axisLeft().scale(y).ticks(5));
+        // 画X轴
+        svg.append("g")
+            .attr("transform", "translate("+margin.left+","+(g_height+margin.top)+")")
+            .call(d3.axisBottom().scale(x).ticks(5));
+
+        //创建一个区域生成器
+        var areapath = d3.area()
+                        .x(function(d,i){return x(i)+margin.left})
+                        .y0(function(d,i){return height- margin.bottom;})
+                        .y1(function(d,i){return  y(d)+margin.top});
+
+        svg.append("path")
+            .attr("d",areapath(dataset))
+            .attr("stroke","black")
+            .attr("strok-width","3px")
+            .attr("fill","yellow")
+
+    </script>
+</body>
+</html>

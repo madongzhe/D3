@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.24.0/d3-legend.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
     <title>Top Internet Countries Visualization</title>
     <style>
       body {
@@ -39,6 +39,8 @@
         background: black;
         color: lightgray;
         border-radius: 20px;
+        position: absolute;
+        transition: left 1s,top 1s;
       }
     </style>
   </head>
@@ -73,13 +75,13 @@
       const yAxisG = g.append('g');
       
       var baseBarLayer = g.append("g")
-      	.attr("id", "baseBarLayer");
+      	                  .attr("id", "baseBarLayer");
       
       var overlayRect = g.append("g")
-        .append("rect")
-        .attr("width", innerWidth)
-        .attr("height", innerHeight)
-        .style("pointer-events", "none");
+                        .append("rect")
+                        .attr("width", innerWidth)
+                        .attr("height", innerHeight)
+                        .style("pointer-events", "none");
       
       var foregroundBarLayer = g.append("g")
       	.attr("id", "foregroundBarLayer");
@@ -129,16 +131,16 @@
       	.ascending(true)
       	.title("Satellite Purposes");
       
-     var tip = d3.tip()
-        .attr("class", "d3-tip")
-        .offset([-10, 0])
-        .html(function(d) {
-          return [
-            (d[1]-d[0]),
-            " satellites"
-          ].join("");
-        });
-      g.call(tip);
+    //  var tip = d3.tip()
+    //     .attr("class", "d3-tip")
+    //     .offset([-10, 0])
+    //     .html(function(d) {
+    //       return [
+    //         (d[1]-d[0]),
+    //         " satellites"
+    //       ].join("");
+    //     });
+    //   g.call(tip);
       
       
 //Render function--------------------------------------------------------------------
@@ -249,8 +251,21 @@
             .attr('x', function (d) { return xScale(xValue(d.data)); })
             .attr('y', function (d) { return yScale(d[1]); })
             .attr('height', function (d) { return yScale(d[0]) - yScale(d[1]); })
-            .on("mouseover", tip.show)
-            .on("mouseout", tip.hide);
+            // .on("mouseover", tip.show)
+            // .on("mouseout", tip.hide);
+            .on("mousemove", function(d,e){
+              console.log(d3.event)
+              d3.select(".d3-tip").remove();
+              d3.select("body")
+                    .append("div")
+                    .attr("class", "d3-tip")
+                    .style("left",(d3.event.pageX)+"px")  
+                    .style("top",(d3.event.pageY+20)+"px")
+                    .text(d[1]-d[0] + " satellites");
+            })
+            .on("mouseout", function(){
+              d3.select(".d3-tip").remove();
+            });
       }
 //-------------------------------------
         function listenForHover(selection, data){
